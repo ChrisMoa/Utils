@@ -2,8 +2,8 @@
 // Created by chris-tab on 15.05.21.
 //
 
-#ifndef PROJEKT003_CTHREAD_H
-#define PROJEKT003_CTHREAD_H
+#ifndef CTHREAD_H
+#define CTHREAD_H
 
 #include <atomic>
 #include <condition_variable>
@@ -128,4 +128,4 @@ namespace Thread
   };
 
 }
-#endif // PROJEKT003_CTHREAD_H
+#endif // CTHREAD_H

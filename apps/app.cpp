@@ -50,26 +50,15 @@ void createLogger()
 {
     using namespace Log;
     auto logger = shared_ptr<ILogger>(new LoggerConsole());
+    Log::setLogLevel(4);
     addLogger(logger);
     DEBUG("Logger created");
 }
 
 int main()
 {
-    // testThread();
     createLogger();
-    std::string exePath = Util::getExePath();
-    INFO(exePath);
-    INFO(std::filesystem::current_path());
-
-    auto exePathStrings = Util::getSubFilesRel(exePath);
-    for (auto exePathString : exePathStrings)
-    {
-        DEBUG(exePathString);
-    }
-    DEBUG("Filename: " + Util::getFilenameOfName("test/test.txt"));
-    DEBUG("Dir: " + Util::getDirOfName("test/test.txt"));
-    DEBUG("fileExists: " + std::to_string(Util::fileExists("test/test.txt")));
+    testThread();
 
     fmt::report_system_error(0, "main()");
     return 0;

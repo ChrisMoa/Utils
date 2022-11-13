@@ -4,16 +4,7 @@
 
 #include "CThread.h"
 #include "Assert.hpp"
-
-#ifndef DEUG
-#define DEBUG(msg) ;
-#endif
-#ifndef INFO
-#define INFO(msg) ;
-#endif
-#ifndef TRACE
-#define TRACE(msg) ;
-#endif
+#include <Log/Logging.hpp>
 
 using namespace std;
 
@@ -22,6 +13,7 @@ namespace Thread
 
     CThread::~CThread()
     {
+        TRACE(threadName + " starts to be destroyed");
         onFinish();
         Terminate();
         delete _threadHandle;
@@ -29,6 +21,7 @@ namespace Thread
 
     CThread::CThread(std::string name) : threadName(name)
     {
+        TRACE(threadName + " will be created");
         flagAlive = true;
         _threadHandle = new thread(&CThread::run, this);
         _threadHandle->detach();
@@ -41,6 +34,7 @@ namespace Thread
 
     void CThread::Resume(void)
     {
+        TRACE(threadName + " continues");
         shared_lock sl(lock);
         flagBreak = false;
         waiting.notify_one();
@@ -48,6 +42,7 @@ namespace Thread
 
     void CThread::Terminate(void)
     {
+        TRACE(threadName + " will be terminated");
         shared_lock sl(lock);
         flagAlive = false;
         flagFinish = false;
@@ -56,7 +51,7 @@ namespace Thread
 
     void CThread::WaitForThread(void)
     {
-        INFO("waits for finished execution");
+        DEBUG(threadName + " waits until finishing execution");
         unique_lock<mutex> ul(mtxWaiting);
         waiting.wait(ul, [&]
                      { onWaiting(); return flagFinish.load(); });
@@ -71,7 +66,7 @@ namespace Thread
 
     void CThread::run(void)
     {
-        INFO("begins running");
+        TRACE(threadName + " begins running");
         while (flagAlive)
         {
             flagFinish.store(false);
@@ -79,12 +74,12 @@ namespace Thread
             flagFinish.store(true);
             this->waiting.notify_one();
             unique_lock<mutex> ul(mtxWaiting);
-            INFO("waits for next execution");
+            TRACE("waits for next execution");
             waiting.wait(ul, [&]
                          { return (!flagFinish.load()); });
             this->waiting.notify_one();
         }
-        INFO("stops running");
+        TRACE(threadName + " stops running");
         delete _threadHandle;
     }
 
@@ -101,6 +96,7 @@ namespace Thread
 
     void CThread::Break(void)
     {
+        TRACE(threadName + " will take a break");
         shared_lock sl(lock);
         flagBreak = true;
     }
@@ -112,6 +108,7 @@ namespace Thread
 
     void CThread::addExecution(int32_t amount)
     {
+#warning "isnt implemented"
     }
 
     void CThread::onResume(void)

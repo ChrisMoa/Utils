@@ -45,7 +45,6 @@
 
 namespace Log
 {
-
     /**
      * @brief Get the Loggers object
      *
