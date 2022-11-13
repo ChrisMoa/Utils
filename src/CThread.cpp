@@ -2,12 +2,18 @@
 // Created by chris-tab on 15.05.21.
 //
 
-#include "cThread.h"
-#include "assert.hpp"
+#include "CThread.h"
+#include "Assert.hpp"
 
+#ifndef DEUG
 #define DEBUG(msg) ;
+#endif
+#ifndef INFO
 #define INFO(msg) ;
+#endif
+#ifndef TRACE
 #define TRACE(msg) ;
+#endif
 
 using namespace std;
 

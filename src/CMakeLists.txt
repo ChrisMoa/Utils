@@ -4,10 +4,12 @@
 # Optionally glob, but only for CMake 3.12 or later:
 # file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${ModernCMakeExample_SOURCE_DIR}/include/modern/*.hpp")
 set(HEADER_LIST 
-  "${PROJECT_SOURCE_DIR}/include/lib.hpp"
-  "${PROJECT_SOURCE_DIR}/include/assert.hpp"
-  "${PROJECT_SOURCE_DIR}/include/cThread.h"
+  "${PROJECT_SOURCE_DIR}/include/CThread.h"
+  "${PROJECT_SOURCE_DIR}/include/Assert.hpp"
   "${PROJECT_SOURCE_DIR}/include/Exception.h"
+  "${PROJECT_SOURCE_DIR}/include/FileSystemUtils.h"
+  "${PROJECT_SOURCE_DIR}/include/StringUtils.hpp"
+
   "${PROJECT_SOURCE_DIR}/include/Log/ILogger.hpp"
   "${PROJECT_SOURCE_DIR}/include/Log/LogEntry.hpp"
   "${PROJECT_SOURCE_DIR}/include/Log/LoggerConsole.hpp"
@@ -16,8 +18,9 @@ set(HEADER_LIST
 
 # Make an automatic library - will be static or dynamic based on user setting
 add_library(Utils 
-  lib.cpp
-  cThread.cpp
+  CThread.cpp
+  FileSystemUtils.cpp
+  StringUtils.cpp
   Log/LogEntry.cpp
   Log/LoggerConsole.cpp
   Log/Logging.cpp
