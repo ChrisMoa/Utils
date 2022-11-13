@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.11...3.22)
 
 # Project name and a few useful settings. Other commands can pick up the results
 project(
-  ModernCMakeExample
+  Utils
   VERSION 0.1
   DESCRIPTION "An example project with CMake"
   LANGUAGES CXX)
@@ -18,6 +18,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
   # Let's nicely support folders in IDEs
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread")
 
   # Testing only available if this is the main app
   # Note this needs to be done in the main CMakeLists
