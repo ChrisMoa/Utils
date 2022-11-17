@@ -4,6 +4,7 @@
 #include <string>
 #include <Log/Logging.hpp>
 #include <Log/LoggerConsole.hpp>
+#include <Log/LogEntry.hpp>
 #include <FileSystemUtils.h>
 
 TEST_CASE("Quick check", "[main]")
@@ -37,10 +38,12 @@ TEST_CASE("Log test", "[LogUtils]")
 {
     using namespace Log;
     auto logger = shared_ptr<ILogger>(new LoggerConsole());
-    addLogger(logger);
+    logger->setLogLevel(Log::LogEntry::Level::TRACE);
+    Log::LoggerManager::getInstance()->addLogger(logger);
+    DEBUG("Logger created");
     TRACE("Text");
     DEBUG("Text");
-    INFO("Text");
+    LINFO("Text");
     WARNING("Text");
     ERROR("Text");
     REQUIRE(true);

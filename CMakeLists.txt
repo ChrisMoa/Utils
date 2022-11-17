@@ -1,5 +1,5 @@
-# Works with 3.11 and tested through 3.22
-cmake_minimum_required(VERSION 3.11...3.22)
+# Works with 3.16 and tested through 3.23
+cmake_minimum_required(VERSION 3.16...3.23)
 
 # Project name and a few useful settings. Other commands can pick up the results
 project(
@@ -14,21 +14,28 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   # Optionally set things like CMAKE_CXX_STANDARD, CMAKE_POSITION_INDEPENDENT_CODE here
 
   # Let's ensure -std=c++xx instead of -std=g++xx
+  set(CMAKE_CXX_STANDARD 20)
   set(CMAKE_CXX_EXTENSIONS OFF)
 
   # Let's nicely support folders in IDEs
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-  # Testing only available if this is the main app
-  # Note this needs to be done in the main CMakeLists
-  # since it calls enable_testing, which must be in the
-  # main CMakeLists.
+# This variable is set by project() in CMake 3.21+
+string(
+  COMPARE EQUAL
+          "${CMAKE_SOURCE_DIR}"
+          "${PROJECT_SOURCE_DIR}"
+          PROJECT_IS_TOP_LEVEL)
+if(PROJECT_IS_TOP_LEVEL)
+  # Consider the CTest module, which creates targets and options!
+  # Only needed if you want to enable submissions to a CDash server.
   include(CTest)
+endif()
 
   # Docs only available if this is the main app
-  find_package(Doxygen)
-  if(Doxygen_FOUND)
+find_package(Doxygen)
+if(Doxygen_FOUND)
     message(STATUS "Doxygen found, building docs")  
   add_subdirectory(docs)
   else()
@@ -43,18 +50,23 @@ if(${CMAKE_VERSION} VERSION_LESS 3.14)
   include(cmake/add_FetchContent_MakeAvailable.cmake)
 endif()
 
+
 # Accumulator library
 # This is header only, so could be replaced with git submodules or FetchContent
 find_package(Boost REQUIRED)
 # Adds Boost::boost
 
 # Formatting library
-FetchContent_Declare(
-  fmtlib
-  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-  GIT_TAG 5.3.0)
-FetchContent_MakeAvailable(fmtlib)
+#FetchContent_Declare(
+#  fmtlib
+#  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+#  GIT_TAG 5.3.0)
+#FetchContent_MakeAvailable(fmtlib)
 # Adds fmt::fmt
+
+# Conan:
+#include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
+#conan_basic_setup()
 
 # The compiled library code is here
 add_subdirectory(src)

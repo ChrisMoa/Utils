@@ -9,6 +9,25 @@ namespace Log
         ;
     }
 
+    LogEntry::LogEntry()
+        : level(Level::OFF), time(""), location(""), message("")
+    {
+        ;
+    }
+
+    LogEntry::LogEntry(LogEntry &a) : level(a.level), time(a.time), location(a.location), message(a.message)
+    {
+    }
+
+    LogEntry &LogEntry::operator=(const LogEntry &a)
+    {
+        level = a.level;
+        time = a.time;
+        location = a.location;
+        message = a.message;
+        return *this;
+    }
+
     LogEntry::~LogEntry()
     {
         ;

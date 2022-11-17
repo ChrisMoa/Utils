@@ -19,7 +19,8 @@ namespace Thread
   {
   public:
     CThread(std::string name);
-
+    CThread(CThread &a);
+    CThread &operator=(const CThread &a);
     virtual ~CThread();
 
     /**
@@ -62,13 +63,10 @@ namespace Thread
     void CheckFlags(void);
 
     /**
-     * @brief adds $amount$ number of automatic execution
-     * @param[in] amount the number of repetitions
-     * @note if $amount$ < 0, then the amount will decrease
-     * @return void
-     * @date 15.05.2021
+     * @brief returns the thread name
+     * @return the thread name
      */
-    void addExecution(int32_t amount);
+    std::string getThreadName();
 
   protected:
     /**
@@ -76,7 +74,7 @@ namespace Thread
      * @return void
      * @date 23.02.2020
      */
-    virtual void Execute(void);
+    virtual void Execute(void) = 0;
 
     // Slots
     /**

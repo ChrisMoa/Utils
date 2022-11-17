@@ -24,7 +24,25 @@ namespace Log
     class ILogger
     {
     public:
+        /**
+         * @brief write the message to the log
+         * @param entry the entry pattern
+         * @return void
+         */
         virtual void writeToLog(const LogEntry &entry) = 0;
+
+        /**
+         * @brief get the level on which the logger writes to his output
+         * @return the log level
+         */
+        virtual LogEntry::Level getLogLevel() = 0;
+
+        /**
+         * @brief set the level on which the logger writes to his output
+         * @param level the log level
+         * @return void
+         */
+        virtual void setLogLevel(LogEntry::Level level) = 0;
     };
 
 } /* namespace LOG */

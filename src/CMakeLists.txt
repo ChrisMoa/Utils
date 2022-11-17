@@ -30,7 +30,17 @@ add_library(Utils
 target_include_directories(Utils PUBLIC ../include)
 
 # This depends on (header only) boost
+find_package(fmt REQUIRED)
+find_package(spdlog REQUIRED)
 target_link_libraries(Utils PRIVATE Boost::boost)
+target_link_libraries(Utils PRIVATE fmt::fmt spdlog::spdlog)
+
+# for android later
+if(ANDROID)
+    target_link_libraries(Utils PUBLIC log)
+    target_link_libraries(Utils INTERFACE log)
+endif()
+
 
 # All users of this library will need at least C++11
 target_compile_features(Utils PUBLIC cxx_std_17)
