@@ -10,6 +10,7 @@ set(HEADER_LIST
   "${PROJECT_SOURCE_DIR}/include/FileSystemUtils.h"
   "${PROJECT_SOURCE_DIR}/include/StringUtils.hpp"
   "${PROJECT_SOURCE_DIR}/include/Logging.hpp"
+  "${PROJECT_SOURCE_DIR}/include/Stopwatch.h"
 )
 
 # Make an automatic library - will be static or dynamic based on user setting

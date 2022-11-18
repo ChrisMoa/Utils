@@ -7,12 +7,6 @@
 #include <tuple>
 #include <vector>
 
-#include <FileSystemUtils.h>
-#include <StringUtils.hpp>
-
-#include <filesystem>
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/basic_file_sink.h>
 #include <Logging.hpp>
 
 int main()
