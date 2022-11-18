@@ -9,11 +9,7 @@ set(HEADER_LIST
   "${PROJECT_SOURCE_DIR}/include/Exception.h"
   "${PROJECT_SOURCE_DIR}/include/FileSystemUtils.h"
   "${PROJECT_SOURCE_DIR}/include/StringUtils.hpp"
-
-  "${PROJECT_SOURCE_DIR}/include/Log/ILogger.hpp"
-  "${PROJECT_SOURCE_DIR}/include/Log/LogEntry.hpp"
-  "${PROJECT_SOURCE_DIR}/include/Log/LoggerConsole.hpp"
-  "${PROJECT_SOURCE_DIR}/include/Log/Logging.hpp"
+  "${PROJECT_SOURCE_DIR}/include/Logging.hpp"
 )
 
 # Make an automatic library - will be static or dynamic based on user setting
@@ -21,9 +17,7 @@ add_library(Utils
   CThread.cpp
   FileSystemUtils.cpp
   StringUtils.cpp
-  Log/LogEntry.cpp
-  Log/LoggerConsole.cpp
-  Log/Logging.cpp
+  Logging.cpp
   ${HEADER_LIST})
 
 # We need this directory, and users of our library will need it too

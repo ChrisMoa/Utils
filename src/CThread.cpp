@@ -4,98 +4,105 @@
 
 #include "CThread.h"
 #include "Assert.hpp"
-#include <Log/Logging.hpp>
+
+#define TRACE(msg) ;
+#define DEBUG(msg) ;
 
 using namespace std;
 
-namespace Thread {
-
-CThread::~CThread()
+namespace Thread
 {
-  TRACE(threadName + " starts to be destroyed");
-  onFinish();
-  Terminate();
-  delete _threadHandle;
-}
 
-CThread::CThread(std::string name) : threadName(name)
-{
-  flagAlive = true;
-  _threadHandle = new thread(&CThread::run, this);
-  _threadHandle->detach();
-}
+  CThread::~CThread()
+  {
+    TRACE(threadName + " starts to be destroyed");
+    onFinish();
+    Terminate();
+    delete _threadHandle;
+  }
 
-CThread::CThread(Thread::CThread &a) {}
-CThread &CThread::operator=(const Thread::CThread &a) { return *this; }
+  CThread::CThread(std::string name) : threadName(name)
+  {
+    flagAlive = true;
+    _threadHandle = new thread(&CThread::run, this);
+    _threadHandle->detach();
+  }
 
-std::string CThread::getThreadName() { return threadName; }
+  CThread::CThread(Thread::CThread &a) {}
+  CThread &CThread::operator=(const Thread::CThread &a) { return *this; }
 
-void CThread::Execute(void) { DEBUG("I have to be overwritten"); }
+  std::string CThread::getThreadName() { return threadName; }
 
-void CThread::Resume(void)
-{
-  shared_lock sl(lock);
-  flagBreak = false;
-  executionCounter = 1;
-  waiting.notify_one();
-}
+  void CThread::Execute(void) { DEBUG("I have to be overwritten"); }
 
-void CThread::Terminate(void)
-{
-  TRACE(threadName + " will be terminated");
-  shared_lock sl(lock);
-  flagAlive = false;
-  flagFinish = false;
-  waiting.notify_all();
-}
+  void CThread::Resume(void)
+  {
+    shared_lock sl(lock);
+    flagBreak = false;
+    executionCounter = 1;
+    waiting.notify_one();
+  }
 
-void CThread::WaitForThread(void)
-{
-  DEBUG(threadName + " waits until finishing execution");
-  unique_lock<mutex> ul(mtxWaiting);
-  waiting.wait(ul, [&] {
+  void CThread::Terminate(void)
+  {
+    TRACE(threadName + " will be terminated");
+    shared_lock sl(lock);
+    flagAlive = false;
+    flagFinish = false;
+    waiting.notify_all();
+  }
+
+  void CThread::WaitForThread(void)
+  {
+    DEBUG(threadName + " waits until finishing execution");
+    unique_lock<mutex> ul(mtxWaiting);
+    waiting.wait(ul, [&]
+                 {
     onWaiting();
-    return flagFinish.load();
-  });
-  onResume();
-  waiting.notify_one();
-}
-
-void CThread::onFinish(void) { DEBUG("I have to be overwritten"); }
-
-void CThread::run(void)
-{
-  while (flagAlive) {
-    flagFinish.store(false);
-    Execute();
-    flagFinish.store(true);
-    this->waiting.notify_one();
-    unique_lock<mutex> ul(mtxWaiting);
-    TRACE("waits for next execution");
-    waiting.wait(ul, [&] { return (!flagFinish.load()); });
-    this->waiting.notify_one();
+    return flagFinish.load(); });
+    onResume();
+    waiting.notify_one();
   }
-  delete _threadHandle;
-}
 
-void CThread::CheckFlags(void)
-{
-  if (flagBreak && flagAlive) {
-    unique_lock<mutex> ul(mtxWaiting);
-    waiting.wait(ul, [&] { return flagBreak.load() && flagAlive; });
+  void CThread::onFinish(void) { DEBUG("I have to be overwritten"); }
+
+  void CThread::run(void)
+  {
+    while (flagAlive)
+    {
+      flagFinish.store(false);
+      Execute();
+      flagFinish.store(true);
+      this->waiting.notify_one();
+      unique_lock<mutex> ul(mtxWaiting);
+      TRACE("waits for next execution");
+      waiting.wait(ul, [&]
+                   { return (!flagFinish.load()); });
+      this->waiting.notify_one();
+    }
+    delete _threadHandle;
   }
-  ASSERT_EXCEPTION(flagAlive, threadName + " stops running");
-}
 
-void CThread::Break(void)
-{
-  TRACE(threadName + " will take a break");
-  shared_lock sl(lock);
-  flagBreak = true;
-}
+  void CThread::CheckFlags(void)
+  {
+    if (flagBreak && flagAlive)
+    {
+      unique_lock<mutex> ul(mtxWaiting);
+      waiting.wait(ul, [&]
+                   { return flagBreak.load() && flagAlive; });
+    }
+    ASSERT_EXCEPTION(flagAlive, threadName + " stops running");
+  }
 
-void CThread::onWaiting(void) { TRACE("do on wait execution"); }
+  void CThread::Break(void)
+  {
+    TRACE(threadName + " will take a break");
+    shared_lock sl(lock);
+    flagBreak = true;
+  }
 
-void CThread::onResume(void) { TRACE("do on resume"); }
+  void CThread::onWaiting(void) { TRACE("do on wait execution"); }
 
-}// namespace Thread
+  void CThread::onResume(void) { TRACE("do on resume"); }
+
+} // namespace Thread
