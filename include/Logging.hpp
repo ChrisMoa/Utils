@@ -6,7 +6,7 @@
 #include <utility>
 
 #ifndef LENTER
-#define LENTER() spdlog::trace("enter") 
+#define LENTER() spdlog::trace("enter")
 #endif
 #ifndef LLEAVE
 #define LLEAVE() spdlog::trace("leave")
@@ -27,10 +27,12 @@
 #define LERROR(...) spdlog::error(__VA_ARGS__)
 #endif
 
-
 namespace Log
 {
-    // Test
+    /**
+     * @brief initialize the logger
+     * @return void
+     */
     void initLogger();
 
 } // namespace LOG
