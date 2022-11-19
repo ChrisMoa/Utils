@@ -11,6 +11,7 @@ set(HEADER_LIST
   "${PROJECT_SOURCE_DIR}/include/StringUtils.hpp"
   "${PROJECT_SOURCE_DIR}/include/Logging.hpp"
   "${PROJECT_SOURCE_DIR}/include/Stopwatch.h"
+  "${PROJECT_SOURCE_DIR}/include/JsonUtils.hpp"
 )
 
 # Make an automatic library - will be static or dynamic based on user setting
@@ -27,8 +28,10 @@ target_include_directories(Utils PUBLIC ../include)
 # This depends on (header only) boost
 find_package(fmt REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(jsoncpp REQUIRED)
 target_link_libraries(Utils PRIVATE Boost::boost)
-target_link_libraries(Utils PRIVATE fmt::fmt spdlog::spdlog)
+target_link_libraries(Utils PRIVATE fmt::fmt spdlog::spdlog jsoncpp_lib)
+target_link_libraries(Utils PUBLIC rapidcsv)
 
 # for android later
 if(ANDROID)

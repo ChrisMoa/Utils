@@ -64,6 +64,22 @@ find_package(Boost REQUIRED)
 #FetchContent_MakeAvailable(fmtlib)
 # Adds fmt::fmt
 
+# Json-Read-Write
+# FetchContent_Declare(
+#  jsoncpp
+#  GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
+#  GIT_TAG 1.9.5)
+# FetchContent_MakeAvailable(jsoncpp)
+
+# rapidcsv
+FetchContent_Declare(
+  rapidcsv
+  GIT_REPOSITORY "https://github.com/d99kris/rapidcsv.git"
+  GIT_TAG        "v8.50"
+)
+FetchContent_MakeAvailable(rapidcsv)
+
+
 # Conan:
 #include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
 #conan_basic_setup()
