@@ -1,5 +1,5 @@
 # Works with 3.16 and tested through 3.23
-cmake_minimum_required(VERSION 3.16...3.23)
+cmake_minimum_required(VERSION 3.20...3.23)
 
 # Project name and a few useful settings. Other commands can pick up the results
 project(
@@ -78,11 +78,6 @@ FetchContent_Declare(
   GIT_TAG        "v8.50"
 )
 FetchContent_MakeAvailable(rapidcsv)
-
-
-# Conan:
-#include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
-#conan_basic_setup()
 
 # The compiled library code is here
 add_subdirectory(src)

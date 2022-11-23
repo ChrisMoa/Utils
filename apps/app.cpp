@@ -11,11 +11,12 @@
 #include <JsonUtils.hpp>
 #include <rapidcsv.h>
 
+#include <Poco/Data/Session.h>
+
 int main()
 {
   Log::initLogger();
   LERROR("Test");
-
   fmt::report_system_error(0, "main()");
   return 0;
 }
