@@ -14,6 +14,15 @@
 #include <string>
 
 #define ASSERT_EXCEPTION(assertion, msg) Util::assert_exception(assertion, msg)
+#define THROW_EXCEPTION(msg) throw std::runtime_error(msg)
+
+#define UNKNOWN_ERROR "UnknownError" //! this message should be applied on unknown errors
+#define UPDATE_ERROR "Update"        //! this message should be applied whenever an udpate exception is thrown or caught
+
+#ifndef THROW_UPDATE_EX
+#define THROW_UPDATE_EX() throw std::out_of_range(UPDATE_ERROR)
+#endif
+typedef std::out_of_range UpdateEx; //! the state update exception @note can maye an own exception
 
 namespace Util
 {

@@ -6,12 +6,13 @@
 set(HEADER_LIST 
   "${PROJECT_SOURCE_DIR}/include/CThread.h"
   "${PROJECT_SOURCE_DIR}/include/Assert.hpp"
-  "${PROJECT_SOURCE_DIR}/include/Exception.h"
   "${PROJECT_SOURCE_DIR}/include/FileSystemUtils.h"
   "${PROJECT_SOURCE_DIR}/include/StringUtils.hpp"
   "${PROJECT_SOURCE_DIR}/include/Logging.hpp"
   "${PROJECT_SOURCE_DIR}/include/Stopwatch.h"
   "${PROJECT_SOURCE_DIR}/include/JsonUtils.hpp"
+  "${PROJECT_SOURCE_DIR}/include/ExecutionThread.hpp"
+  "${PROJECT_SOURCE_DIR}/include/Settings.hpp"
 )
 
 # Make an automatic library - will be static or dynamic based on user setting
@@ -20,18 +21,28 @@ add_library(Utils
   FileSystemUtils.cpp
   StringUtils.cpp
   Logging.cpp
+  ExecutionThread.cpp
+  Settings.cpp
   ${HEADER_LIST})
 
 # We need this directory, and users of our library will need it too
 target_include_directories(Utils PUBLIC ../include)
 
 # This depends on (header only) boost
-find_package(fmt REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(fmt REQUIRED)
 find_package(jsoncpp REQUIRED)
+find_package(Poco REQUIRED Foundation Util Data JSON)
 target_link_libraries(Utils PRIVATE Boost::boost)
-target_link_libraries(Utils PRIVATE fmt::fmt spdlog::spdlog jsoncpp_lib)
-target_link_libraries(Utils PUBLIC rapidcsv)
+target_link_libraries(Utils PRIVATE fmt::fmt jsoncpp_lib)
+target_link_libraries(Utils PUBLIC rapidcsv spdlog::spdlog)
+
+target_link_libraries(Utils PUBLIC
+    Poco::Foundation
+    Poco::Util
+    Poco::Data
+    Poco::JSON
+)
 
 # for android later
 if(ANDROID)
