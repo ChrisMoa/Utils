@@ -18,6 +18,8 @@ namespace Thread
         std::function<void(Util::Settings &)> finishCallback = nullptr;
         Util::Settings internalSettings;
         std::string jobName;
+        const size_t retryCounterMax = 2; //! maximum amount of retrys per job
+        size_t retryCounter = retryCounterMax;
 
         Job(std::string jobName,
             std::function<void(Util::Settings &)> runCallback);
@@ -41,6 +43,13 @@ namespace Thread
 
     private:
         void Execute() override;
+
+        void onException(std::string msg) override;
+
+        void onFinish() override;
+
+        void Terminate() override;
+
         std::queue<Job> jobQueue;
         std::mutex mtx;
     };

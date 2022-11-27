@@ -54,6 +54,19 @@ namespace Util
         ss << _parameters[key];
         ss >> value;
     }
+
+    void Settings::set(const string key, const size_t value)
+    {
+        _parameters[key] = to_string(value);
+    }
+    void Settings::get(const string key, size_t &value)
+    {
+        checkKey();
+        stringstream ss;
+        ss << _parameters[key];
+        ss >> value;
+    }
+
     void Settings::set(const string key, const double value)
     {
         _parameters[key] = to_string(value);

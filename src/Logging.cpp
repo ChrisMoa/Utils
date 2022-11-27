@@ -20,6 +20,7 @@ namespace Log
       file_logger->set_pattern("%d.%m.%Y %H:%M:%S;%n;%^%l%$;%t;%v");
       file_logger->sinks().push_back(console_sink);
       spdlog::set_default_logger(file_logger);
+      spdlog::flush_every(std::chrono::seconds(1));
     }
   }
 } // namespace LOG

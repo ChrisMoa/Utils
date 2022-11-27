@@ -6,6 +6,7 @@
 #include "Assert.hpp"
 #include <Logging.hpp>
 #include <exception>
+#include <FileSystemUtils.h>
 
 using namespace std;
 
@@ -15,9 +16,7 @@ namespace Thread
   CThread::~CThread()
   {
     LTRACE(threadName + " starts to be destroyed");
-    onFinish();
     Terminate();
-    delete _threadHandle;
   }
 
   CThread::CThread(std::string name) : threadName(name)
@@ -67,6 +66,7 @@ namespace Thread
     shared_lock sl(lock);
     flagAlive = false;
     flagFinish = false;
+    flagBegin = true;
     waiting.notify_all();
     begin.notify_all();
   }
@@ -78,7 +78,6 @@ namespace Thread
     waiting.wait(ul, [&] { //
       return flagFinish.load();
     });
-    waiting.notify_all();
   }
 
   void CThread::run(void)
@@ -88,9 +87,15 @@ namespace Thread
       try
       {
         LTRACE("waits for execution");
-        unique_lock<mutex> ul(mtxWaiting);
-        begin.wait(ul, [&]
-                   { return (flagBegin.load()); });
+        {
+          unique_lock<mutex> ul(mtxWaiting);
+          begin.wait(ul, [&]
+                     { return (flagBegin.load()); });
+        }
+        if (!flagAlive)
+        {
+          continue;
+        }
         flagBegin.store(false);
         flagFinish.store(false);
         CheckFlags();
@@ -111,9 +116,8 @@ namespace Thread
         onException(UNKNOWN_ERROR);
       }
       flagFinish.store(true);
+      waiting.notify_all();
     }
-    onEnd();
-    delete _threadHandle;
   }
 
   void CThread::CheckFlags(void)
@@ -121,8 +125,8 @@ namespace Thread
     ASSERT_EXCEPTION(flagAlive, threadName + " stops running");
     if (flagBreak && flagAlive)
     {
-      unique_lock<mutex> ul(mtxWaiting);
       onStartWaiting();
+      unique_lock<mutex> ul(mtxWaiting);
       waiting.wait(ul, [&]
                    { return flagBreak.load() && flagAlive; });
       onResume();
@@ -163,11 +167,6 @@ namespace Thread
   }
 
   void CThread::onFinish(void)
-  {
-    // implement me
-  }
-
-  void CThread::onEnd(void)
   {
     // implement me
   }

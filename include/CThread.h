@@ -139,13 +139,6 @@ namespace Thread
      */
     virtual void onFlagCheck();
 
-    /**
-     * @brief will be executed when the created thread stops executing and destroying
-     * @param void
-     * @return void
-     */
-    virtual void onEnd();
-
     // Signals
 
   private:

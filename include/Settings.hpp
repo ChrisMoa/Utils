@@ -39,6 +39,8 @@ namespace Util
 
         void set(const string key, const int value);
         void get(const string key, int &value);
+        void set(const string key, const size_t value);
+        void get(const string key, size_t &value);
         void set(const string key, const double value);
         void get(const string key, double &value);
 

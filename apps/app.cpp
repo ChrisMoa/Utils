@@ -14,6 +14,7 @@
 #include <Poco/Data/Session.h>
 
 #include <CThread.h>
+#include <ExecutionThread.hpp>
 
 class TestThread : public Thread::CThread
 {
@@ -28,7 +29,8 @@ private:
     LINFO("I did a hard job");
     while (!finished)
     {
-      CheckFlags();
+      // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      // CheckFlags();
     }
   }
 
@@ -44,17 +46,12 @@ private:
 
   void onStartWaiting() override
   {
-    LINFO("I start waiting");
+    LTRACE("I start waiting");
   }
 
   void onResume() override
   {
-    LINFO("I continue");
-  }
-
-  void onEnd() override
-  {
-    LWARNING("Thread is destroyed");
+    LTRACE("I continue");
   }
 
   bool finished = false;
@@ -63,17 +60,39 @@ private:
 int main()
 {
   Log::initLogger();
-  auto testThread = std::shared_ptr<TestThread>(new TestThread());
-  testThread->Begin();
-  LINFO("I do something");
-  LINFO("Thread should do a break");
-  testThread->Break();
-  std::this_thread::sleep_for(std::chrono::seconds(3));
-  LINFO("Thread should return from break");
-  // testThread->Resume();
-  std::this_thread::sleep_for(std::chrono::seconds(3));
-  testThread->Terminate();
-  std::this_thread::sleep_for(std::chrono::seconds(3));
+  LWARNING("Begin");
+  auto executionThread = std::shared_ptr<Thread::ExecutionThread>(new Thread::ExecutionThread());
+  size_t counter = 1;
+  auto executeCb = [&](Util::Settings &settings)
+  {
+    LINFO("I execute something difficult: {}", counter);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    LINFO("I finished executing something difficult: {}", counter);
+  };
+  auto exceptionCb = [&](Util::Settings &settings)
+  {
+    LINFO("I got an exception but it do nothing: {}", counter);
+  };
+  auto finishCb = [&](Util::Settings &settings)
+  {
+    LINFO("I finished the job: {}", counter);
+    counter++;
+  };
+  Thread::Job jb1("1st job", executeCb, exceptionCb, finishCb);
+  executionThread->addJob(jb1);
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  Thread::Job jb2("2nd job", executeCb, exceptionCb, finishCb);
+  executionThread->addJob(jb2);
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  Thread::Job jb3("3rd job", executeCb, exceptionCb, finishCb);
+  executionThread->addJob(jb3);
+
+  executionThread->WaitForThread();
+  LWARNING("put in a value to finish");
+  executionThread.reset();
+
+  std::string inString;
+  std::cin >> inString;
   fmt::report_system_error(0, "main()");
   return 0;
 }
