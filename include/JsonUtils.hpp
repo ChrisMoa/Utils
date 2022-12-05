@@ -1,7 +1,7 @@
 #ifndef JSONUTILS_HPP
 #define JSONUTILS_HPP
 
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 namespace Util
 {

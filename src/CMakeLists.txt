@@ -32,16 +32,15 @@ target_include_directories(Utils PUBLIC ../include)
 find_package(spdlog REQUIRED)
 find_package(fmt REQUIRED)
 find_package(jsoncpp REQUIRED)
-find_package(Poco REQUIRED Foundation Util Data JSON)
+find_package(Poco REQUIRED Foundation Util Data)
 target_link_libraries(Utils PRIVATE Boost::boost)
-target_link_libraries(Utils PRIVATE fmt::fmt jsoncpp_lib)
-target_link_libraries(Utils PUBLIC rapidcsv spdlog::spdlog)
+target_link_libraries(Utils PRIVATE fmt::fmt)
+target_link_libraries(Utils PUBLIC rapidcsv spdlog::spdlog jsoncpp)
 
 target_link_libraries(Utils PUBLIC
     Poco::Foundation
     Poco::Util
     Poco::Data
-    Poco::JSON
 )
 
 # for android later
