@@ -54,22 +54,6 @@ endif()
 # Accumulator library
 # This is header only, so could be replaced with git submodules or FetchContent
 find_package(Boost REQUIRED)
-# Adds Boost::boost
-
-# Formatting library
-#FetchContent_Declare(
-#  fmtlib
-#  GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-#  GIT_TAG 5.3.0)
-#FetchContent_MakeAvailable(fmtlib)
-# Adds fmt::fmt
-
-# Json-Read-Write
-# FetchContent_Declare(
-#  jsoncpp
-#  GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp.git
-#  GIT_TAG 1.9.5)
-# FetchContent_MakeAvailable(jsoncpp)
 
 # rapidcsv
 FetchContent_Declare(
@@ -84,8 +68,6 @@ add_subdirectory(src)
 
 # The executable code is here
 add_subdirectory(apps)
-
-add_subdirectory(benchmark)
 
 # Testing only available if this is the main app
 # Emergency override MODERN_CMAKE_BUILD_TESTING provided as well
