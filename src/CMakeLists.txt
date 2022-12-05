@@ -3,55 +3,52 @@
 
 # Optionally glob, but only for CMake 3.12 or later:
 # file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${ModernCMakeExample_SOURCE_DIR}/include/modern/*.hpp")
-set(HEADER_LIST 
-  "${PROJECT_SOURCE_DIR}/include/CThread.h"
-  "${PROJECT_SOURCE_DIR}/include/Assert.hpp"
-  "${PROJECT_SOURCE_DIR}/include/FileSystemUtils.h"
-  "${PROJECT_SOURCE_DIR}/include/StringUtils.hpp"
-  "${PROJECT_SOURCE_DIR}/include/Logging.hpp"
-  "${PROJECT_SOURCE_DIR}/include/Stopwatch.h"
-  "${PROJECT_SOURCE_DIR}/include/JsonUtils.hpp"
-  "${PROJECT_SOURCE_DIR}/include/ExecutionThread.hpp"
-  "${PROJECT_SOURCE_DIR}/include/Settings.hpp"
-)
+set(LibName "Utils")
 
-# Make an automatic library - will be static or dynamic based on user setting
-add_library(Utils 
-  CThread.cpp
-  FileSystemUtils.cpp
-  StringUtils.cpp
-  Logging.cpp
-  ExecutionThread.cpp
-  Settings.cpp
-  ${HEADER_LIST})
+file(GLOB HEADER_LIST "${PROJECT_SOURCE_DIR}/include/*.h" "${PROJECT_SOURCE_DIR}/include/*.hpp")
+file(GLOB SRC_LIST "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/Ui/*.cpp")
 
+message(STATUS "found headers: ${HEADER_LIST}")
+message(STATUS "found src: ${SRC_LIST}")
+
+add_library(${LibName} ${SRC_LIST} ${HEADER_LIST} ${UI_LIST})
 # We need this directory, and users of our library will need it too
-target_include_directories(Utils PUBLIC ../include)
+target_include_directories(${LibName} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
-# This depends on (header only) boost
+# boost
+target_link_libraries(${LibName} PUBLIC Boost::boost)
+
+# spdlog
 find_package(spdlog REQUIRED)
-find_package(fmt REQUIRED)
-find_package(jsoncpp REQUIRED)
-find_package(Poco REQUIRED Foundation Util Data)
-target_link_libraries(Utils PRIVATE Boost::boost)
-target_link_libraries(Utils PRIVATE fmt::fmt)
-target_link_libraries(Utils PUBLIC rapidcsv spdlog::spdlog jsoncpp)
+target_link_libraries(${LibName} PUBLIC spdlog::spdlog)
 
-target_link_libraries(Utils PUBLIC
-    Poco::Foundation
-    Poco::Util
-    Poco::Data
-)
+# json cpp
+find_package(jsoncpp REQUIRED)
+target_link_libraries(${LibName} PUBLIC jsoncpp)
+
+# fmt
+find_package(fmt REQUIRED)
+target_link_libraries(${LibName} PRIVATE fmt::fmt)
+
+# poco cpp
+find_package(Poco REQUIRED Foundation Util Data)
+target_link_libraries(${LibName} PUBLIC 
+  Poco::Foundation
+  Poco::Util
+  Poco::Data)
+
+# rapidcsv
+target_link_libraries(${LibName} PUBLIC rapidcsv)
 
 # for android later
 if(ANDROID)
-    target_link_libraries(Utils PUBLIC log)
-    target_link_libraries(Utils INTERFACE log)
+    target_link_libraries(${LibName} PUBLIC log)
+    target_link_libraries(${LibName} INTERFACE log)
 endif()
 
 
-# All users of this library will need at least C++11
-target_compile_features(Utils PUBLIC cxx_std_17)
+# All users of this library will need at least C++20
+target_compile_features(${LibName} PUBLIC cxx_std_20)
 
 # IDEs should put the headers in a nice place
 source_group(
@@ -59,4 +56,4 @@ source_group(
   PREFIX "Header Files"
   FILES ${HEADER_LIST})
 
-message(STATUS "successfully build lib <Utils>")  
+message(STATUS "successfully build lib <${LibName}>")  

@@ -1,30 +1,32 @@
 #!/bin/bash
 
-additionalPack_CMake=0
-additionalPack_Conan=0
-additionalPack_Doxygen=1
+additionalCommand_Headers=1
+additionalCommand_Doxygen=0
+additionalCommand_Build=0
 
-# conan
-if [[ $additionalPack_Conan == 1 ]]; then
-    conan install .. --build=missing
+### additionalCommand_Headers
+if [[ $additionalCommand_Headers == 1 ]]; then
+    mkdir -p build/lib/include 
+    rm -r build/lib/include/**
+    cp include/*.h build/lib/include
+    cp build/src/libUtils.a build/lib/libUtils.a
 fi
 
-# CMake 
-if [[ $additionalPack_CMake == 1 ]]; then
-    rm -rf build
-    mkdir build
-    cd build
-    cmake .. -DCMAKE_BUILD_TYPE=DEBUG
-    cmake --build .
-    ./apps/app
-    cd ..
-fi
-
-# doxygen
-if [[ $additionalPack_Doxygen == 1 ]]; then
+### doxygen
+if [[ $additionalCommand_Doxygen == 1 ]]; then
     cd docs
     doxygen Doxyfile
     cd ..
 fi
 
-echo "finished"
+### build
+if [[ $additionalCommand_Build == 1 ]]; then
+    # configure
+    cmake --no-warn-unused-cli -DCMAKE_TOOLCHAIN_FILE=~/Downloads/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/clang -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++ -S. -Bbuild -G Ninja
+    # build
+    cmake --build build --config Debug --target app --
+    # run
+    cd build
+    apps/app
+    cd ../
+fi
