@@ -8,23 +8,23 @@ set(LibName "Utils")
 file(GLOB HEADER_LIST "${PROJECT_SOURCE_DIR}/include/*.h" "${PROJECT_SOURCE_DIR}/include/*.hpp")
 file(GLOB SRC_LIST "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/Ui/*.cpp")
 
-message(STATUS "found headers: ${HEADER_LIST}")
-message(STATUS "found src: ${SRC_LIST}")
+#message(STATUS "found headers: ${HEADER_LIST}")
+#message(STATUS "found src: ${SRC_LIST}")
 
 add_library(${LibName} ${SRC_LIST} ${HEADER_LIST} ${UI_LIST})
 # We need this directory, and users of our library will need it too
 target_include_directories(${LibName} PUBLIC ${PROJECT_SOURCE_DIR}/include)
 
 # boost
-target_link_libraries(${LibName} PUBLIC Boost::boost)
+target_link_libraries(${LibName} PRIVATE Boost::boost)
 
 # spdlog
-find_package(spdlog REQUIRED)
-target_link_libraries(${LibName} PUBLIC spdlog::spdlog)
+find_package(spdlog CONFIG REQUIRED)
+target_link_libraries(${LibName} PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
 
 # json cpp
-find_package(jsoncpp REQUIRED)
-target_link_libraries(${LibName} PUBLIC jsoncpp)
+find_package(jsoncpp CONFIG REQUIRED)
+target_link_libraries(${LibName} PRIVATE jsoncpp_object jsoncpp_static JsonCpp::JsonCpp)
 
 # fmt
 find_package(fmt REQUIRED)
@@ -32,13 +32,13 @@ target_link_libraries(${LibName} PRIVATE fmt::fmt)
 
 # poco cpp
 find_package(Poco REQUIRED Foundation Util Data)
-target_link_libraries(${LibName} PUBLIC 
+target_link_libraries(${LibName} PRIVATE 
   Poco::Foundation
   Poco::Util
   Poco::Data)
 
 # rapidcsv
-target_link_libraries(${LibName} PUBLIC rapidcsv)
+target_link_libraries(${LibName} PRIVATE rapidcsv)
 
 # for android later
 if(ANDROID)

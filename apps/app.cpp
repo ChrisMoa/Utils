@@ -21,6 +21,9 @@ int main()
 {
   Log::initLogger();
   LWARNING("Begin");
+  Json::Value val;
+  val["Test"] = 10;
+  LINFO("Test: {}", val.toStyledString());
   fmt::report_system_error(0, "main()");
   return 0;
 }
