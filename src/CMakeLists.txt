@@ -37,6 +37,11 @@ target_link_libraries(${LibName} PRIVATE
   Poco::Util
   Poco::Data)
 
+# crypto cpp
+find_package(cryptopp CONFIG REQUIRED)
+target_link_libraries(${LibName} PRIVATE cryptopp::cryptopp)
+
+
 # rapidcsv
 target_link_libraries(${LibName} PRIVATE rapidcsv)
 

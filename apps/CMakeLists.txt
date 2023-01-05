@@ -28,3 +28,7 @@ target_link_libraries(${AppName} PRIVATE
     Poco::Util
     Poco::Data
 )
+
+# crypto cpp
+find_package(cryptopp CONFIG REQUIRED)
+target_link_libraries(${AppName} PRIVATE cryptopp::cryptopp)
