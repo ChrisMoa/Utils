@@ -25,28 +25,42 @@
 #include "cryptopp/modes.h"
 #include "cryptopp/osrng.h"
 
+#include <sstream>
+
 using namespace CryptoPP;
+
 int main() {
-  Log::initLogger();
-  LWARNING("Begin");
-  Json::Value val;
-  val["Test"] = 10;
+    Log::initLogger();
+    LWARNING("Begin");
 
-  byte key[AES::DEFAULT_KEYLENGTH] = {'1', '2', '3', '4', '5', '6', '7', '8',
-                                      '1', '2', '3', '4', '5', '6', '7', '8'};
-  byte iv[AES::BLOCKSIZE] = {'8', '7', '6', '5', '4', '3', '2', '1',
-                             '8', '7', '6', '5', '4', '3', '2', '1'};
+    std::string pdata = "CTR encrypt mode 1234567890";
 
-  /*********************************\
-  \*********************************/
-  std::string pdata = "CTR encrypt mode 1234567890";
-  auto result1 = Crypto::encryptFile(pdata.c_str(), key, sizeof(key), iv,
-                                     sizeof(iv), pdata.size());
+    int keySize;
+    auto key = Crypto::getKey(keySize);
+    int ivSize;
+    auto iv = Crypto::getIV(ivSize);
 
-  auto result2 = Crypto::decryptFile(result1, key, sizeof(key), iv, sizeof(iv),
-                                     pdata.size());
+    Crypto::encryptFile(key, keySize, iv, ivSize, "Testdokument.txt");
+    std::string text;
 
-  LINFO("Test: {}", val.toStyledString());
-  fmt::report_system_error(0, "main()");
-  return 0;
+    Crypto::decryptFile(key, keySize, iv, ivSize, "Testdokument.txt", text);
+
+    LERROR("text: {}", text);
+
+    // LINFO("plain before enc: {}", pdata);
+    // auto cipher = Crypto::encryptString(pdata, key, keySize, iv, ivSize);
+    // auto plain = Crypto::decryptString(cipher, key, keySize, iv, ivSize);
+    // LINFO("plain after enc: {}", plain);
+
+    /*********************************\
+    \*********************************/
+    // auto result1 = Crypto::encryptFile(pdata.c_str(), key, sizeof(key), iv,
+    //                                    sizeof(iv), pdata.size());
+
+    // auto result2 = Crypto::decryptFile(result1, key, sizeof(key), iv,
+    // sizeof(iv),
+    //                                    pdata.size());
+
+    fmt::report_system_error(0, "main()");
+    return 0;
 }
