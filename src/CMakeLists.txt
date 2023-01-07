@@ -6,7 +6,7 @@
 set(LibName "Utils")
 
 file(GLOB HEADER_LIST "${PROJECT_SOURCE_DIR}/include/*.h" "${PROJECT_SOURCE_DIR}/include/*.hpp")
-file(GLOB SRC_LIST "${PROJECT_SOURCE_DIR}/src/*.cpp" "${PROJECT_SOURCE_DIR}/Ui/*.cpp")
+file(GLOB SRC_LIST "${PROJECT_SOURCE_DIR}/src/*.cpp")
 
 #message(STATUS "found headers: ${HEADER_LIST}")
 #message(STATUS "found src: ${SRC_LIST}")
